@@ -13,7 +13,7 @@ public class NestInternals : DynamicObject
 
 	internal readonly Dictionary<object, object?> Store = new();
 
-	internal readonly List<(HashSet<EventType>, Action<(EventType type, object key, object? value)>)> EventHandlers
+	internal readonly List<(HashSet<NestEvent>, Action<(NestEvent type, object key, object? value)>)> EventHandlers
 		= new();
 
 	internal bool FireEvents = true;
@@ -30,8 +30,8 @@ public class NestInternals : DynamicObject
 		Store[key] = value;
 
 		if (FireEvents)
-			foreach (var handler in from h in EventHandlers where h.Item1.Contains(EventType.SET) select h.Item2)
-				handler((EventType.SET, key, value));
+			foreach (var handler in from h in EventHandlers where h.Item1.Contains(NestEvent.SET) select h.Item2)
+				handler((NestEvent.SET, key, value));
 	}
 
 	internal void InternalDelete(object key)
@@ -40,8 +40,8 @@ public class NestInternals : DynamicObject
 		Store.Remove(key);
 
 		if (FireEvents)
-			foreach (var handler in from h in EventHandlers where h.Item1.Contains(EventType.DELETE) select h.Item2)
-				handler((EventType.DELETE, key, oldValue));
+			foreach (var handler in from h in EventHandlers where h.Item1.Contains(NestEvent.DELETE) select h.Item2)
+				handler((NestEvent.DELETE, key, oldValue));
 	}
 
 	// dynamic nest.x style gets
