@@ -19,10 +19,10 @@ All interaction is done via the `NestsCS.Nest` static class members.
 ```cs
 using NestsCS;
 
-
 var myNest = Nest.make(new { foo: "Hello, World!", bar: 5, baz: false });
+
 Nest.on(myNest, NestEvent.SET,
-    ((NestEvent type, object key, object? value)) => {
+    (type, key, value) => {
     if (key == "foo")
         Console.WriteLine($"Foo was written to: {value}");
     }
@@ -37,5 +37,3 @@ Nest.Loud(myNest);
 myNest.bar = true; // datatypes need not be consistent
 // handler called but no log
 ```
-
-
