@@ -52,6 +52,15 @@ public static class Nest
 		realNest.EventHandlers.RemoveAll(e => Util.SetsEqual(e.Item1, types) && e.Item2 == handler);
 	}
 
+	public static void On(dynamic nest, EventType type, Action<(EventType, object, object?)> handler)
+		=> On(nest, new[] { type }, handler);
+
+	public static void Once(dynamic nest, EventType type, Action<(EventType, object, object?)> handler)
+		=> Once(nest, new[] { type }, handler);
+
+	public static void Off(dynamic nest, EventType type, Action<(EventType, object, object?)> handler)
+		=> Off(nest, new[] { type }, handler);
+
 	public static void Track(dynamic nest) => throw new NotImplementedException();
 
 	public static ExpandoObject Target(dynamic nest)
@@ -72,4 +81,11 @@ public static class Nest
 	public static void Path(dynamic nest) => throw new NotImplementedException();
 
 	public static bool IsNest(dynamic maybeNest) => maybeNest is NestInternals;
+
+	// not part of the original nests api but c# no delete keyword
+	public static void Delete(dynamic nest, object key)
+	{
+		if (nest is not NestInternals realNest) throw new NotANestException();
+		realNest.InternalDelete(key);
+	}
 }

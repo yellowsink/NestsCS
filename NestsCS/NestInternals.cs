@@ -18,14 +18,14 @@ public class NestInternals : DynamicObject
 
 	internal bool FireEvents = true;
 
-	private object? Get(object key)
+	private object? InternalGet(object key)
 	{
 		if (!Store.ContainsKey(key)) throw new MissingKeyException(key);
 
 		return Store[key];
 	}
 
-	private void Set(object key, object? value)
+	private void InternalSet(object key, object? value)
 	{
 		Store[key] = value;
 
@@ -34,9 +34,9 @@ public class NestInternals : DynamicObject
 				handler((EventType.SET, key, value));
 	}
 
-	internal void Delete(object key)
+	internal void InternalDelete(object key)
 	{
-		var oldValue = Get(key);
+		var oldValue = InternalGet(key);
 		Store.Remove(key);
 
 		if (FireEvents)
@@ -47,14 +47,14 @@ public class NestInternals : DynamicObject
 	// dynamic nest.x style gets
 	public override bool TryGetMember(GetMemberBinder binder, out object? result)
 	{
-		result = Get(binder.Name);
+		result = InternalGet(binder.Name);
 		return true;
 	}
 
 	// dynamic nest.x style sets
 	public override bool TrySetMember(SetMemberBinder binder, object? value)
 	{
-		Set(binder.Name, value);
+		InternalSet(binder.Name, value);
 		return true;
 	}
 
@@ -62,7 +62,7 @@ public class NestInternals : DynamicObject
 	// ReSharper disable once UnusedMember.Global
 	public object? this[object k]
 	{
-		get => Get(k);
-		set => Set(k, value);
+		get => InternalGet(k);
+		set => InternalSet(k, value);
 	}
 }
